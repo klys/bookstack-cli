@@ -77,7 +77,13 @@ export BOOKSTACK_API_SECRET=YOUR_TOKEN_SECRET
 Syntax:
 
 ```bash
-book-cli run <resource> <method> [args...] [--apihost ... --apitoken ... --apisecret ...]
+book-cli <resource> <method> [args...] [--apihost ... --apitoken ... --apisecret ...]
+```
+
+Legacy alias (still supported):
+
+```bash
+book-cli run <resource> <method> [args...]
 ```
 
 Supported resources:
@@ -101,43 +107,43 @@ Common methods:
 List books:
 
 ```bash
-book-cli run book list
+book-cli book list
 ```
 
 List with query params:
 
 ```bash
-book-cli run books list '{"count":5,"sort":"-id"}'
+book-cli books list '{"count":5,"sort":"-id"}'
 ```
 
 Read page by id:
 
 ```bash
-book-cli run page read 15
+book-cli page read 15
 ```
 
 Create chapter:
 
 ```bash
-book-cli run chapter create '{"book_id":5,"name":"CLI Chapter"}'
+book-cli chapter create '{"book_id":5,"name":"CLI Chapter"}'
 ```
 
 Update shelf:
 
 ```bash
-book-cli run shelf update 3 '{"name":"Updated Shelf"}'
+book-cli shelf update 3 '{"name":"Updated Shelf"}'
 ```
 
 Delete user:
 
 ```bash
-book-cli run user delete 12
+book-cli user delete 12
 ```
 
 Use per-command credential overrides:
 
 ```bash
-book-cli run book list \
+book-cli book list \
   --apihost https://docs.example.com \
   --apitoken YOUR_TOKEN_ID \
   --apisecret YOUR_TOKEN_SECRET

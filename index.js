@@ -98,26 +98,39 @@ program
   .option('--apitoken <token>', 'BookStack API token id override')
   .option('--apisecret <secret>', 'BookStack API token secret override')
   .action(async (resource, method, args, options) => {
-    try {
-      const resourceKey = RESOURCE_ALIASES[String(resource).toLowerCase()];
-      if (!resourceKey) {
-        throw new Error(`Unknown resource "${resource}".`);
-      }
-
-      const runtimeConfig = buildRuntimeConfig(options);
-      const sdk = new BookstackSDK(runtimeConfig);
-      const target = sdk[resourceKey];
-      if (!target || typeof target[method] !== 'function') {
-        throw new Error(`Unknown method "${method}" for resource "${resourceKey}".`);
-      }
-
-      const parsedArgs = (args || []).map(parseArg);
-      const result = await target[method](...parsedArgs);
-      console.log(JSON.stringify(result, null, 2));
-    } catch (error) {
-      console.error(error.message);
-      process.exitCode = 1;
-    }
+    await executeResourceMethod(resource, method, args, options);
   });
+
+program
+  .arguments('<resource> <method> [args...]')
+  .option('--apihost <url>', 'BookStack host URL override')
+  .option('--apitoken <token>', 'BookStack API token id override')
+  .option('--apisecret <secret>', 'BookStack API token secret override')
+  .action(async (resource, method, args, options) => {
+    await executeResourceMethod(resource, method, args, options);
+  });
+
+async function executeResourceMethod(resource, method, args, options) {
+  try {
+    const resourceKey = RESOURCE_ALIASES[String(resource).toLowerCase()];
+    if (!resourceKey) {
+      throw new Error(`Unknown resource "${resource}".`);
+    }
+
+    const runtimeConfig = buildRuntimeConfig(options);
+    const sdk = new BookstackSDK(runtimeConfig);
+    const target = sdk[resourceKey];
+    if (!target || typeof target[method] !== 'function') {
+      throw new Error(`Unknown method "${method}" for resource "${resourceKey}".`);
+    }
+
+    const parsedArgs = (args || []).map(parseArg);
+    const result = await target[method](...parsedArgs);
+    console.log(JSON.stringify(result, null, 2));
+  } catch (error) {
+    console.error(error.message);
+    process.exitCode = 1;
+  }
+}
 
 program.parse(process.argv);
